@@ -1,6 +1,7 @@
-package com.example.streamhub.follow;
+package com.example.streamhub.entity;
 
-import com.example.streamhub.user.AppUser;
+import java.time.Instant;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -13,10 +14,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-
-import java.time.Instant;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(
         name = "follows",
         uniqueConstraints = @UniqueConstraint(
@@ -45,8 +49,7 @@ public class Follow {
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
 
-    protected Follow() {
-    }
+
 
     public Follow(AppUser follower, AppUser followed, FollowType type) {
         if (follower == followed) {
@@ -58,23 +61,4 @@ public class Follow {
         this.createdAt = Instant.now();
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public AppUser getFollower() {
-        return follower;
-    }
-
-    public AppUser getFollowed() {
-        return followed;
-    }
-
-    public FollowType getType() {
-        return type;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
 }

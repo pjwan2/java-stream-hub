@@ -1,9 +1,12 @@
-package com.example.streamhub.follow;
+package com.example.streamhub.service;
 
-import com.example.streamhub.common.ConflictException;
-import com.example.streamhub.user.AppUser;
-import com.example.streamhub.user.UserRepository;
-import com.example.streamhub.user.UserRole;
+import com.example.streamhub.entity.AppUser;
+import com.example.streamhub.entity.Follow;
+import com.example.streamhub.entity.FollowType;
+import com.example.streamhub.entity.UserRole;
+import com.example.streamhub.exception.ConflictException;
+import com.example.streamhub.repository.FollowRepository;
+import com.example.streamhub.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,7 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static com.example.streamhub.follow.FollowDtos.CreateFollowRequest;
+import static com.example.streamhub.dto.FollowDtos.CreateFollowRequest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;

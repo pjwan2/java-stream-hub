@@ -1,4 +1,6 @@
-package com.example.streamhub.user;
+package com.example.streamhub.entity;
+
+import java.time.Instant;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,9 +11,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import java.time.Instant;
 
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(
         name = "users",
@@ -36,9 +42,7 @@ public class AppUser {
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
 
-    protected AppUser() {
-        // JPA 通过反射创建实体，需要无参构造器。
-    }
+
 
     public AppUser(String username, String email, UserRole role) {
         this.username = username;
@@ -52,23 +56,5 @@ public class AppUser {
         this.role = role;
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public UserRole getRole() {
-        return role;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
 }

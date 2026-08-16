@@ -1,4 +1,4 @@
-package com.example.streamhub.common;
+package com.example.streamhub.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;

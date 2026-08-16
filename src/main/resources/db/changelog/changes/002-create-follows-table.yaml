@@ -1,0 +1,51 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-create-follows-table
+      author: claude
+      changes:
+        - createTable:
+            tableName: follows
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: follower_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: followed_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: DATETIME
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: follows
+            baseColumnNames: follower_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_follows_follower
+        - addForeignKeyConstraint:
+            baseTableName: follows
+            baseColumnNames: followed_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_follows_followed
+        - addUniqueConstraint:
+            tableName: follows
+            columnNames: follower_id, followed_id, type
+            constraintName: uk_follows_follower_followed_type

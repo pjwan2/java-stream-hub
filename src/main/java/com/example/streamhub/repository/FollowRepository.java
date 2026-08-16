@@ -1,5 +1,7 @@
-package com.example.streamhub.follow;
+package com.example.streamhub.repository;
 
+import com.example.streamhub.entity.Follow;
+import com.example.streamhub.entity.FollowType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

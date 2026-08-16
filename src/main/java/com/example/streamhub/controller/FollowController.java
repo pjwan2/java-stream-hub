@@ -1,6 +1,7 @@
-package com.example.streamhub.follow;
+package com.example.streamhub.controller;
 
-import com.example.streamhub.user.UserDtos.UserResponse;
+import com.example.streamhub.dto.UserDtos.UserResponse;
+import com.example.streamhub.service.FollowService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.net.URI;
 import java.util.List;
 
-import static com.example.streamhub.follow.FollowDtos.CreateFollowRequest;
-import static com.example.streamhub.follow.FollowDtos.FollowResponse;
+import static com.example.streamhub.dto.FollowDtos.CreateFollowRequest;
+import static com.example.streamhub.dto.FollowDtos.FollowResponse;
 
 @RestController
 @RequestMapping("/api")

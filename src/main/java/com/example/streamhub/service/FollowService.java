@@ -1,20 +1,23 @@
-package com.example.streamhub.follow;
+package com.example.streamhub.service;
 
-import com.example.streamhub.common.ConflictException;
-import com.example.streamhub.common.NotFoundException;
-import com.example.streamhub.user.AppUser;
-import com.example.streamhub.user.UserRepository;
-import com.example.streamhub.user.UserRole;
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
-import static com.example.streamhub.follow.FollowDtos.CreateFollowRequest;
-import static com.example.streamhub.follow.FollowDtos.FollowResponse;
-import static com.example.streamhub.user.UserDtos.UserResponse;
+import com.example.streamhub.dto.FollowDtos.CreateFollowRequest;
+import com.example.streamhub.dto.FollowDtos.FollowResponse;
+import com.example.streamhub.dto.UserDtos.UserResponse;
+import com.example.streamhub.entity.AppUser;
+import com.example.streamhub.entity.Follow;
+import com.example.streamhub.entity.FollowType;
+import com.example.streamhub.entity.UserRole;
+import com.example.streamhub.exception.ConflictException;
+import com.example.streamhub.exception.NotFoundException;
+import com.example.streamhub.repository.FollowRepository;
+import com.example.streamhub.repository.UserRepository;
 
 @Service
 public class FollowService {
@@ -53,7 +56,9 @@ public class FollowService {
 
     @Transactional(readOnly = true)
     public List<FollowResponse> listByFollower(Long followerId) {
+        log.debug("Listing follows for followerId={}", followerId);
         findUser(followerId);
+
         return followRepository.findByFollowerId(followerId).stream()
                 .map(FollowResponse::from)
                 .toList();
@@ -70,6 +75,7 @@ public class FollowService {
     @Transactional(readOnly = true)
     public List<UserResponse> recommend(int limit) {
         int safeLimit = Math.max(1, Math.min(limit, 100));
+        log.debug("Recommending streamers, limit={}, safeLimit={}", limit, safeLimit);
         List<Long> rankedIds = followRepository.rankStreamerIds(FollowType.FOLLOW).stream()
                 .limit(safeLimit)
                 .map(row -> (Long) row[0])

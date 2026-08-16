@@ -1,5 +1,7 @@
-package com.example.streamhub.follow;
+package com.example.streamhub.dto;
 
+import com.example.streamhub.entity.Follow;
+import com.example.streamhub.entity.FollowType;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.Instant;

@@ -1,4 +1,4 @@
-package com.example.streamhub.common;
+package com.example.streamhub.exception;
 
 public class ConflictException extends RuntimeException {
 

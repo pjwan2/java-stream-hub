@@ -1,5 +1,7 @@
-package com.example.streamhub.user;
+package com.example.streamhub.dto;
 
+import com.example.streamhub.entity.AppUser;
+import com.example.streamhub.entity.UserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

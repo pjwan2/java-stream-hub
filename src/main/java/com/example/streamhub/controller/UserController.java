@@ -1,5 +1,6 @@
-package com.example.streamhub.user;
+package com.example.streamhub.controller;
 
+import com.example.streamhub.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.net.URI;
 import java.util.List;
 
-import static com.example.streamhub.user.UserDtos.CreateUserRequest;
-import static com.example.streamhub.user.UserDtos.UpdateUserRequest;
-import static com.example.streamhub.user.UserDtos.UserResponse;
+import static com.example.streamhub.dto.UserDtos.CreateUserRequest;
+import static com.example.streamhub.dto.UserDtos.UpdateUserRequest;
+import static com.example.streamhub.dto.UserDtos.UserResponse;
 
 @RestController
 @RequestMapping("/api/users")

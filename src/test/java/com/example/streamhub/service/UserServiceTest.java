@@ -1,18 +1,24 @@
-package com.example.streamhub.user;
+package com.example.streamhub.service;
 
-import com.example.streamhub.common.ConflictException;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import static com.example.streamhub.user.UserDtos.CreateUserRequest;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.redis.core.StringRedisTemplate;
+
+import com.example.streamhub.dto.UserDtos.CreateUserRequest;
+import com.example.streamhub.entity.AppUser;
+import com.example.streamhub.entity.UserRole;
+import com.example.streamhub.exception.ConflictException;
+import com.example.streamhub.repository.UserRepository;
+
+import tools.jackson.databind.ObjectMapper;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -22,9 +28,14 @@ class UserServiceTest {
 
     private UserService userService;
 
+    @Mock
+    private StringRedisTemplate redisTemplate;
+    @Mock
+    private ObjectMapper objectMapper;
+
     @BeforeEach
     void setUp() {
-        userService = new UserService(userRepository);
+        userService = new UserService(userRepository, redisTemplate, objectMapper);
     }
 
     @Test

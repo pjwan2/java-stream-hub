@@ -1,4 +1,4 @@
-package com.example.streamhub.follow;
+package com.example.streamhub.entity;
 
 public enum FollowType {
     FOLLOW,

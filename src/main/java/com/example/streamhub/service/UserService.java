@@ -1,17 +1,24 @@
-package com.example.streamhub.user;
-
-import com.example.streamhub.common.ConflictException;
-import com.example.streamhub.common.NotFoundException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+package com.example.streamhub.service;
 
 import java.util.List;
 
-import static com.example.streamhub.user.UserDtos.CreateUserRequest;
-import static com.example.streamhub.user.UserDtos.UpdateUserRequest;
-import static com.example.streamhub.user.UserDtos.UserResponse;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.example.streamhub.dto.UserDtos.CreateUserRequest;
+import com.example.streamhub.dto.UserDtos.UpdateUserRequest;
+import com.example.streamhub.dto.UserDtos.UserResponse;
+import com.example.streamhub.entity.AppUser;
+import com.example.streamhub.exception.ConflictException;
+import com.example.streamhub.exception.NotFoundException;
+import com.example.streamhub.repository.UserRepository;
+
+import tools.jackson.databind.ObjectMapper;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import tools.jackson.databind.ObjectMapper;
 
 @Service
 public class UserService {
@@ -19,10 +26,15 @@ public class UserService {
     private static final Logger log = LogManager.getLogger(UserService.class);
 
     private final UserRepository userRepository;
+    private final StringRedisTemplate redisTemplate;
+    private final ObjectMapper objectMapper;
+    
 
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    public UserService(UserRepository userRepository, StringRedisTemplate redisTemplate, ObjectMapper objectMapper) {
+    this.userRepository = userRepository;
+    this.redisTemplate = redisTemplate;
+    this.objectMapper = objectMapper;
+}
 
     @Transactional
     public UserResponse create(CreateUserRequest request) {
@@ -39,6 +51,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserResponse get(Long id) {
+        log.debug("Fetching user id={}", id);
         return UserResponse.from(findEntity(id));
     }
 

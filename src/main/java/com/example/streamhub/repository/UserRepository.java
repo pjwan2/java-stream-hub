@@ -1,5 +1,6 @@
-package com.example.streamhub.user;
+package com.example.streamhub.repository;
 
+import com.example.streamhub.entity.AppUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
