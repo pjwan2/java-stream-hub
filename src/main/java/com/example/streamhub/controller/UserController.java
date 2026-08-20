@@ -19,7 +19,7 @@ import com.example.streamhub.dto.UserDtos.CreateUserRequest;
 import com.example.streamhub.dto.UserDtos.UpdateUserRequest;
 import com.example.streamhub.dto.UserDtos.UserResponse;
 import com.example.streamhub.service.UserService;
-
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 
 @RestController
@@ -32,6 +32,7 @@ public class UserController {
         this.userService = userService;
     }
 
+    @Operation(summary = "创建新用户")
     @PostMapping
     public ResponseEntity<UserResponse> create(@Valid @RequestBody CreateUserRequest request) {
         UserResponse response = userService.create(request);
