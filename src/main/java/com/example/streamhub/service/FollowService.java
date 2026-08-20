@@ -1,23 +1,33 @@
 package com.example.streamhub.service;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.streamhub.dto.FollowDtos.CreateFollowRequest;
 import com.example.streamhub.dto.FollowDtos.FollowResponse;
+import com.example.streamhub.dto.FollowDtos.LeaderboardEntry;
 import com.example.streamhub.dto.UserDtos.UserResponse;
 import com.example.streamhub.entity.AppUser;
 import com.example.streamhub.entity.Follow;
 import com.example.streamhub.entity.FollowType;
+import com.example.streamhub.entity.OutboxEvent;
 import com.example.streamhub.entity.UserRole;
+import com.example.streamhub.event.FollowCreatedEvent;
+import com.example.streamhub.event.LeaderboardKeys;
 import com.example.streamhub.exception.ConflictException;
 import com.example.streamhub.exception.NotFoundException;
 import com.example.streamhub.repository.FollowRepository;
+import com.example.streamhub.repository.OutboxEventRepository;
 import com.example.streamhub.repository.UserRepository;
+
+import tools.jackson.databind.ObjectMapper;
 
 @Service
 public class FollowService {
@@ -26,10 +36,18 @@ public class FollowService {
 
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
+    private final OutboxEventRepository outboxEventRepository;
+    private final ObjectMapper objectMapper;
+    private final StringRedisTemplate redisTemplate;
 
-    public FollowService(FollowRepository followRepository, UserRepository userRepository) {
+    public FollowService(FollowRepository followRepository, UserRepository userRepository,
+                          OutboxEventRepository outboxEventRepository, ObjectMapper objectMapper,
+                          StringRedisTemplate redisTemplate) {
         this.followRepository = followRepository;
         this.userRepository = userRepository;
+        this.outboxEventRepository = outboxEventRepository;
+        this.objectMapper = objectMapper;
+        this.redisTemplate = redisTemplate;
     }
 
     @Transactional
@@ -49,6 +67,9 @@ public class FollowService {
         }
 
         Follow saved = followRepository.save(new Follow(follower, followed, request.type()));
+        var event = new FollowCreatedEvent(follower.getId(), followed.getId(), request.type());
+        outboxEventRepository.save(new OutboxEvent("FollowCreated", objectMapper.writeValueAsString(event)));
+
         log.info("Created relation follower={}, followed={}, type={}",
                 follower.getId(), followed.getId(), request.type());
         return FollowResponse.from(saved);
@@ -88,6 +109,22 @@ public class FollowService {
                 .map(usersById::get)
                 .filter(java.util.Objects::nonNull)
                 .map(UserResponse::from)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<LeaderboardEntry> leaderboard(int limit) {
+        int safeLimit = Math.max(1, Math.min(limit, 100));
+        Set<ZSetOperations.TypedTuple<String>> topEntries =
+                redisTemplate.opsForZSet().reverseRangeWithScores(LeaderboardKeys.STREAMER_LEADERBOARD, 0, safeLimit - 1);
+
+        return topEntries.stream()
+                .map(tuple -> {
+                    Long streamerId = Long.valueOf(tuple.getValue());
+                    AppUser streamer = findUser(streamerId);
+                    long followerCount = tuple.getScore().longValue();
+                    return new LeaderboardEntry(streamerId, streamer.getUsername(), followerCount);
+                })
                 .toList();
     }
 

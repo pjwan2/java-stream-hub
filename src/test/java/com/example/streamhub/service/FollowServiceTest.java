@@ -6,12 +6,16 @@ import com.example.streamhub.entity.FollowType;
 import com.example.streamhub.entity.UserRole;
 import com.example.streamhub.exception.ConflictException;
 import com.example.streamhub.repository.FollowRepository;
+import com.example.streamhub.repository.OutboxEventRepository;
 import com.example.streamhub.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.redis.core.StringRedisTemplate;
+
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Optional;
 
@@ -30,12 +34,18 @@ class FollowServiceTest {
     private FollowRepository followRepository;
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private OutboxEventRepository outboxEventRepository;
+    @Mock
+    private ObjectMapper objectMapper;
+    @Mock
+    private StringRedisTemplate redisTemplate;
 
     private FollowService followService;
 
     @BeforeEach
     void setUp() {
-        followService = new FollowService(followRepository, userRepository);
+        followService = new FollowService(followRepository, userRepository, outboxEventRepository, objectMapper, redisTemplate);
     }
 
     @Test

@@ -35,4 +35,11 @@ public final class FollowDtos {
             );
         }
     }
+
+    public record LeaderboardEntry(
+            Long streamerId,
+            String username,
+            long followerCount
+    ) {
+    }
 }

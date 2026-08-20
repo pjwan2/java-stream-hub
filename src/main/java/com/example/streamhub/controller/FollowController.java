@@ -1,5 +1,6 @@
 package com.example.streamhub.controller;
 
+import com.example.streamhub.dto.FollowDtos.LeaderboardEntry;
 import com.example.streamhub.dto.UserDtos.UserResponse;
 import com.example.streamhub.service.FollowService;
 import jakarta.validation.Valid;
@@ -49,5 +50,10 @@ public class FollowController {
     @GetMapping("/recommendations")
     public List<UserResponse> recommend(@RequestParam(defaultValue = "10") int limit) {
         return followService.recommend(limit);
+    }
+
+    @GetMapping("/streamers/leaderboard")
+    public List<LeaderboardEntry> leaderboard(@RequestParam(defaultValue = "10") int limit) {
+        return followService.leaderboard(limit);
     }
 }
